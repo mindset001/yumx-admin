@@ -147,7 +147,7 @@ export default function SupportPage() {
                   <div>Date issued</div>
                   <div>Status</div>
                   <div>Refund ID</div>
-                  <div>Issuer's name</div>
+                    <div>Issuer&apos;s name</div>
                   <div>Role</div>
                   <div>Issue summary</div>
                   <div></div>
