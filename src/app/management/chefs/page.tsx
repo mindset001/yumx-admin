@@ -116,7 +116,7 @@ export default function ChefsPage() {
         {/* Header */}
         <div className="bg-[#FFF2F2] px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Chef's record</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Chef&apos;s record</h1>
             <div className="relative bg-white">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
