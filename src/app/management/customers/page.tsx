@@ -110,7 +110,7 @@ export default function CustomersPage() {
     <div className="flex min-h-screen bg-[#FFF2F2]">
       {/* Sidebar */}
       <Sidebar />
-      
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
@@ -126,33 +126,30 @@ export default function CustomersPage() {
             </div>
           </div>
         </div>
-        
+
         <div className="flex-1 p-6 space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-36 gap-y-8 bg-white py-8 px-12 rounded-lg ">
             {statsCards.map((stat, index) => (
-              <Card 
+              <Card
                 key={index}
-                className={`${
-                  stat.variant === 'primary' 
-                    ? 'bg-[#C72600] text-white border-0' 
-                    : 'bg-white border border-gray-200'
-                } transition-all duration-300 hover:shadow-lg`}
+                className={`${stat.variant === 'primary'
+                    ? 'bg-[#C72600] text-white border-0'
+                    : 'bg-[#FFF2F2] border border-gray-200'
+                  } transition-all duration-300 hover:shadow-lg`}
               >
-                <CardContent className=" h-[20px]">
-                  <div className="flex items-center justify-between space-y-2">
-                    <p className={`text-sm font-medium ${
-                      stat.variant === 'primary' 
-                        ? 'text-red-100' 
+                <CardContent className="">
+                  <div className="space-y-2 flex items-center justify-between h-[20px]">
+                    <p className={`text-sm font-medium ${stat.variant === 'primary'
+                        ? 'text-red-100'
                         : 'text-[#C72600]'
-                    }`}>
+                      }`}>
                       {stat.title}
                     </p>
-                    <p className={`text-2xl font-bold ${
-                      stat.variant === 'primary' 
-                        ? 'text-white' 
+                    <p className={`text-2xl font-bold ${stat.variant === 'primary'
+                        ? 'text-white'
                         : 'text-[#C72600]'
-                    }`}>
+                      }`}>
                       {stat.value}
                     </p>
                   </div>
@@ -189,12 +186,11 @@ export default function CustomersPage() {
 
                       {/* Status */}
                       <div>
-                        <Badge 
-                          className={`${
-                            customer.status === 'Active' 
-                              ? 'bg-green-100 text-green-800 hover:bg-green-100' 
+                        <Badge
+                          className={`${customer.status === 'Active'
+                              ? 'bg-green-100 text-green-800 hover:bg-green-100'
                               : 'bg-red-100 text-red-800 hover:bg-red-100'
-                          }`}
+                            }`}
                         >
                           {customer.status}
                         </Badge>
@@ -218,8 +214,8 @@ export default function CustomersPage() {
                       {/* Action */}
                       <div className="text-right">
                         <Link href={`/management/customers/${customer.id}`}>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             className="bg-[#C72600] hover:bg-red-700 text-white"
                           >
                             View

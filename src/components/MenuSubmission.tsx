@@ -25,12 +25,12 @@ const submissions: MenuSubmission[] = [
     user: {
       name: "Fatima Abubakar",
       role: "Chef",
-      avatar: "/avatars/fatima.jpg",
+      avatar:  "/images/food.png",
       initials: "FA"
     },
     dish: {
       name: "Delicious meal served",
-      image: "/dishes/meal1.jpg"
+      image:  "/images/food.png"
     },
     time: "2m ago",
     status: 'pending'
@@ -40,7 +40,7 @@ const submissions: MenuSubmission[] = [
     user: {
       name: "Fatima Abubakar",
       role: "Chef",
-      avatar: "/avatars/fatima.jpg",
+      avatar:  "/images/food.png",
       initials: "FA"
     },
     dish: {
@@ -55,12 +55,12 @@ const submissions: MenuSubmission[] = [
     user: {
       name: "Fatima Abubakar",
       role: "Chef",
-      avatar: "/avatars/fatima.jpg",
+      avatar: "/images/food.png",
       initials: "FA"
     },
     dish: {
       name: "Grilled chicken special",
-      image: "/dishes/meal3.jpg"
+      image: "/images/food.png"
     },
     time: "8m ago",
     status: 'pending'
@@ -69,7 +69,7 @@ const submissions: MenuSubmission[] = [
 
 export function MenuSubmission() {
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-sm bg-transparent border-0 shadow-none">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-base font-medium">Menu submission</CardTitle>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -78,7 +78,7 @@ export function MenuSubmission() {
       </CardHeader>
       <CardContent className="space-y-4">
         {submissions.map((submission) => (
-          <div key={submission.id} className="flex items-center justify-between">
+          <div key={submission.id} className="flex flex-col bg-white p-4 rounded-lg ">
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <Avatar className="h-10 w-10">
@@ -106,7 +106,7 @@ export function MenuSubmission() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center border-t p-2 space-x-2">
               <Button variant="outline" size="sm" className="h-7 text-xs">
                 Approve
               </Button>

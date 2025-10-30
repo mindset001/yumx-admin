@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import Logo from "../../public/images/logo.png"
 import { 
   LayoutDashboard, 
   Settings, 
@@ -15,6 +16,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 
 const sidebarItems = [
   {
@@ -86,11 +88,10 @@ export function Sidebar() {
       {/* Top Section - Logo and Navigation */}
       <div className="flex-1">
         {/* Logo */}
+
         <div className="flex items-center gap-2 p-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-red-600 text-white font-bold">
-            Y
-          </div>
-          <span className="text-xl font-bold text-gray-900">Yum X</span>
+          <Image src={Logo} alt="Yum X Logo" />
+          
         </div>
 
         {/* Navigation */}

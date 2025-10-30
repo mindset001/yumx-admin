@@ -22,7 +22,7 @@ const activities: Activity[] = [
     user: {
       name: "Fatima Abubakar",
       role: "Chef",
-      avatar: "/avatars/fatima.jpg",
+      avatar: "/images/man.png",
       initials: "FA"
     },
     action: "1 minute",
@@ -34,7 +34,7 @@ const activities: Activity[] = [
     user: {
       name: "Fatima Abubakar",
       role: "Chef",
-      avatar: "/avatars/fatima.jpg",
+      avatar: "/images/man.png",
       initials: "FA"
     },
     action: "5 minutes",
@@ -46,7 +46,7 @@ const activities: Activity[] = [
     user: {
       name: "Fatima Abubakar",
       role: "Chef",
-      avatar: "/avatars/fatima.jpg",
+      avatar:  "/images/man.png",
       initials: "FA"
     },
     action: "10 minutes",
@@ -68,7 +68,7 @@ export function Activities() {
         {activities.map((activity) => (
           <div key={activity.id} className="flex items-center gap-2 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center space-x-3">
-              <Avatar className="h-30 w-20">
+              <Avatar className="h-20 w-20 rounded-sm">
                 <AvatarImage src={activity.user.avatar} alt={activity.user.name} />
                 <AvatarFallback className="bg-orange-100 text-orange-700">
                   {activity.user.initials}

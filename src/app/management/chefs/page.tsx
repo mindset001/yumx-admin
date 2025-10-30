@@ -129,7 +129,7 @@ export default function ChefsPage() {
         
         <div className="flex-1 p-6 space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 bg-white p-4 rounded-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-36 gap-y-8 bg-white py-8 px-12 rounded-lg">
             {statsCards.map((stat, index) => (
               <Card 
                 key={index}
