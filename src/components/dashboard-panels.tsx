@@ -8,15 +8,14 @@ import { MoreHorizontal, Eye } from "lucide-react";
 
 export function DashboardHeader() {
   return (
-    <div className="flex items-center justify-between p-6 bg-[FFF2F2] ">
-      <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-      
+    <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 bg-[#FFF2F2] gap-2 sm:gap-0">
+      <h1 className="text-lg sm:text-2xl font-semibold text-gray-900">Dashboard</h1>
       <div className="flex items-center gap-2">
         <Avatar className="h-8 w-8">
           <AvatarImage src="/avatar.jpg" alt="Adam Iufut" />
           <AvatarFallback>AI</AvatarFallback>
         </Avatar>
-        <span className="text-sm font-medium">Adam Iufut</span>
+        <span className="text-xs sm:text-sm font-medium">Adam Iufut</span>
       </div>
     </div>
   );
@@ -33,15 +32,15 @@ export function ActivitiesPanel() {
     },
     {
       id: 2,
-      user: "Fatima Abubakar", 
+      user: "Fatima Abubakar",
       action: "View",
-      time: "10:24 AM", 
+      time: "10:24 AM",
       status: "Active" as const,
     },
     {
       id: 3,
       user: "Fatima Abubakar",
-      action: "View", 
+      action: "View",
       time: "10:24 AM",
       status: "Active" as const,
     },
@@ -50,35 +49,24 @@ export function ActivitiesPanel() {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Activities</CardTitle>
+        <CardTitle className="text-xs sm:text-sm font-medium">Activities</CardTitle>
         <Button variant="ghost" size="sm">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </CardHeader>
       <CardContent className="space-y-3">
         {activities.map((activity) => (
-          <div key={activity.id} className="flex items-center gap-3">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="/avatar.jpg" alt={activity.user} />
-              <AvatarFallback>FA</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {activity.user}
-              </p>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" className="h-6 px-2">
-                  <Eye className="h-3 w-3 mr-1" />
-                  {activity.action}
-                </Button>
-                <Badge variant="destructive" className="text-xs">
-                  {activity.status}
-                </Badge>
-              </div>
-            </div>
+          <div key={activity.id} className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3">
+            <span className="text-xs font-medium flex-1 truncate">{activity.user}</span>
+            <Badge variant="outline" className="text-xs px-2 py-1 min-w-[60px] text-center">
+              {activity.status}
+            </Badge>
+            <span className="text-xs text-gray-500">{activity.time}</span>
+            <Button variant="ghost" size="icon" className="p-1">
+              <Eye className="h-4 w-4" />
+            </Button>
           </div>
         ))}
-        <div className="text-xs text-muted-foreground">View all</div>
       </CardContent>
     </Card>
   );

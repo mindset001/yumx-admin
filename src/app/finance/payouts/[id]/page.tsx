@@ -30,81 +30,83 @@ const payoutData = {
 
 export default function PayoutDetailsPage() {
     return (
-        <div className="flex min-h-screen bg-[#FFF2F2]">
+        <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
             {/* Sidebar */}
             <Sidebar />
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
                 {/* Header */}
-                <div className="bg-white border-b px-6 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/finance/payouts">
-                            <Button variant="ghost" size="sm" className="gap-2">
-                                <ArrowLeft className="h-4 w-4" />
-                                Back to Payouts
-                            </Button>
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">Payout Details</h1>
+                <div className="bg-white border-b px-2 sm:px-4 md:px-6 py-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                        <div className="flex items-center gap-2">
+                            <Link href="/finance/payouts">
+                                <Button variant="ghost" size="sm" className="gap-2">
+                                    <ArrowLeft className="h-4 w-4" />
+                                  
+                                </Button>
+                            </Link>
+                            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Payout Details</h1>
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex-1 p-6 space-y-6">
+                <div className="flex-1 p-2 sm:p-4 md:p-6 space-y-6">
                     {/* Payout Information Card */}
                     <Card className="bg-white">
-                        <CardContent className="p-8">
+                        <CardContent className="p-4 sm:p-8">
                             {/* Payout Title */}
-                            <h2 className="text-2xl font-bold text-[#C72600] mb-8">
+                            <h2 className="text-lg sm:text-2xl font-bold text-[#C72600] mb-4 sm:mb-8">
                                 Payout detail view
                             </h2>
 
                             {/* Payout Details Grid */}
-                            <div className="space-y-4">
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Payout ID:</span>
+                            <div className="space-y-2 sm:space-y-4">
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Payout ID:</span>
                                     <span className="text-gray-900">{payoutData.payoutId}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Requested date:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Requested date:</span>
                                     <div>
                                         <div className="text-gray-900">{payoutData.requestedDate}</div>
-                                        <div className="text-gray-500 text-sm">{payoutData.requestedTime}</div>
+                                        <div className="text-gray-500 text-xs sm:text-sm">{payoutData.requestedTime}</div>
                                     </div>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Payout date:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Payout date:</span>
                                     <div>
                                         <div className="text-gray-900">{payoutData.payoutDate}</div>
-                                        <div className="text-gray-500 text-sm">{payoutData.payoutTime}</div>
+                                        <div className="text-gray-500 text-xs sm:text-sm">{payoutData.payoutTime}</div>
                                     </div>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Payout status:</span>
-                                    <Badge className="bg-[#C2E66E] text-[#000] hover:bg-green-100">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Payout status:</span>
+                                    <Badge className="bg-[#C2E66E] text-[#000] hover:bg-green-100 mt-1 sm:mt-0">
                                         {payoutData.payoutStatus}
                                     </Badge>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Payment status :</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Payment status :</span>
                                     <span className="text-gray-900">{payoutData.paymentStatus}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Payment method:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Payment method:</span>
                                     <span className="text-gray-900">{payoutData.paymentMethod}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Amount</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Amount</span>
                                     <span className="text-[#C72600] font-bold">{payoutData.amount}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Items ordered:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Items ordered:</span>
                                     <div className="space-y-2">
                                         {payoutData.itemsOrdered.map((item, index) => (
                                             <div key={index} className="flex items-center gap-2">
@@ -121,24 +123,24 @@ export default function PayoutDetailsPage() {
 
                     {/* Chef Information */}
                     <Card className="bg-white">
-                        <CardContent className="p-8">
-                            <h3 className="text-xl font-bold text-[#C72600] mb-6">
+                        <CardContent className="p-4 sm:p-8">
+                            <h3 className="text-base sm:text-xl font-bold text-[#C72600] mb-4 sm:mb-6">
                                 Chef information
                             </h3>
 
-                            <div className="space-y-4">
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Customer name:</span>
+                            <div className="space-y-2 sm:space-y-4">
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-28 sm:w-32">Customer name:</span>
                                     <span className="text-gray-900">{payoutData.chef.name}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Phone number:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-28 sm:w-32">Phone number:</span>
                                     <span className="text-gray-900">{payoutData.chef.phone}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Email:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-28 sm:w-32">Email:</span>
                                     <span className="text-gray-900">{payoutData.chef.email}</span>
                                 </div>
                             </div>
@@ -146,14 +148,14 @@ export default function PayoutDetailsPage() {
                     </Card>
 
                     {/* Action Buttons */}
-                    <div className="flex justify-center gap-4">
+                    <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
                         <Button 
-                            className="bg-[#C2E66E] hover:bg-green-600 text-[#000000] font-[400] px-8 py-2"
+                            className="bg-[#C2E66E] hover:bg-green-600 text-[#000000] font-[400] px-6 sm:px-8 py-2"
                         >
                             Approve payout
                         </Button>
                         <Button 
-                            className="bg-[#C72600] hover:bg-red-700 text-white px-8 py-2"
+                            className="bg-[#C72600] hover:bg-red-700 text-white px-6 sm:px-8 py-2"
                         >
                             Reject payout
                         </Button>

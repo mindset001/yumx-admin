@@ -117,37 +117,37 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FFF2F2]">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
       {/* Sidebar */}
       <Sidebar />
-      
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className=" bg-[#FFF2F2] px-6 py-4 ">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Support</h1>
-            <div className="relative">
+        <div className="bg-[#FFF2F2] px-2 sm:px-4 md:px-6 py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Support</h1>
+            <div className="relative w-full sm:w-auto">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Search menu"
-                className="pl-10 w-80"
+                className="pl-10 w-full sm:w-80"
               />
             </div>
           </div>
         </div>
-        
-        <div className="flex-1 p-6">
+
+        <div className="flex-1 p-2 sm:p-4 md:p-6">
           {/* Support Tickets Table */}
           <Card>
             <CardContent className="p-0">
               {/* Table Header */}
-              <div className="bg-[#C72600] text-white px-6 py-4">
+              <div className="bg-[#C72600] text-white px-2 sm:px-6 py-4 hidden md:block">
                 <div className="grid grid-cols-7 gap-4 text-sm font-medium">
                   <div>Date issued</div>
                   <div>Status</div>
                   <div>Refund ID</div>
-                    <div>Issuer&apos;s name</div>
+                  <div>Issuer&apos;s name</div>
                   <div>Role</div>
                   <div>Issue summary</div>
                   <div></div>
@@ -157,8 +157,9 @@ export default function SupportPage() {
               {/* Table Body */}
               <div className="divide-y divide-gray-200">
                 {supportTickets.map((ticket) => (
-                  <div key={ticket.id} className="px-6 py-4 hover:bg-gray-50">
-                    <div className="grid grid-cols-7 gap-4 items-center">
+                  <div key={ticket.id} className="px-2 sm:px-6 py-4 hover:bg-gray-50">
+                    {/* Responsive: grid for md+, stacked for mobile */}
+                    <div className="grid grid-cols-1 md:grid-cols-7 gap-2 md:gap-4 items-center">
                       {/* Date Issued */}
                       <div className="text-sm">
                         <div className="font-medium text-gray-900">{ticket.dateIssued}</div>

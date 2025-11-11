@@ -47,44 +47,44 @@ export default function PaymentSettingsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       {/* Sidebar */}
       <Sidebar />
-      
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="bg-white border-b px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Configuration</h1>
-            <div className="relative">
+        <div className="bg-white border-b px-2 sm:px-4 md:px-6 py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Configuration</h1>
+            <div className="relative w-full sm:w-auto">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Search menu"
-                className="pl-10 w-80"
+                className="pl-10 w-full sm:w-80"
               />
             </div>
           </div>
         </div>
-        
-        <div className="flex-1 p-6">
+
+        <div className="flex-1 p-2 sm:p-4 md:p-6">
           {/* Payment Settings List */}
           <div className="bg-white rounded-lg border border-gray-200">
             <div className="divide-y divide-gray-200">
               {settings.map((setting, index) => (
-                <div key={setting.id} className="p-6 flex items-center justify-between hover:bg-gray-50">
-                  <div className="flex-1">
-                    <h3 className="text-base font-medium text-gray-900 mb-1">
+                <div key={setting.id} className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-gray-50">
+                  <div className="flex-1 w-full">
+                    <h3 className="text-sm sm:text-base font-medium text-gray-900 mb-1">
                       {setting.title}
                     </h3>
                     {setting.description && (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs sm:text-sm text-gray-500">
                         {setting.description}
                       </p>
                     )}
                   </div>
-                  
-                  <div className="ml-6">
+
+                  <div className="sm:ml-6 w-full sm:w-auto flex justify-end">
                     <div className="flex items-center">
                       <input
                         type="radio"
@@ -108,3 +108,5 @@ export default function PaymentSettingsPage() {
     </div>
   );
 }
+
+// (Removed duplicate/erroneous code after the main component)

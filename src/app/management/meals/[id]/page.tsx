@@ -18,37 +18,39 @@ const mealData = {
 
 export default function MealDetailsPage() {
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
             {/* Sidebar */}
             <Sidebar />
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
                 {/* Header */}
-                <div className="bg-white border-b px-6 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/management/meals">
-                            <Button variant="ghost" size="sm" className="gap-2">
-                                <ArrowLeft className="h-4 w-4" />
-                                Back to Meals
-                            </Button>
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">Meal Details</h1>
+                <div className="bg-white border-b px-2 sm:px-4 md:px-6 py-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                        <div className="flex items-center gap-2">
+                            <Link href="/management/meals">
+                                <Button variant="ghost" size="sm" className="gap-2">
+                                    <ArrowLeft className="h-4 w-4" />
+                                    Back to Meals
+                                </Button>
+                            </Link>
+                            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Meal Details</h1>
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex-1 p-6 space-y-6">
+                <div className="flex-1 p-2 sm:p-4 md:p-6 space-y-6">
                     {/* Meal Information Card */}
                     <Card>
-                        <CardContent className="p-8">
-                            <div className="space-y-6">
+                        <CardContent className="p-4 sm:p-8">
+                            <div className="space-y-4 sm:space-y-6">
                                 {/* Meal Name and Status */}
-                                <div className="flex items-start justify-between">
+                                <div className="flex flex-col sm:flex-row items-start justify-between gap-2">
                                     <div>
-                                        <h2 className="text-2xl font-bold text-[#C72600] mb-4">
+                                        <h2 className="text-lg sm:text-2xl font-bold text-[#C72600] mb-2 sm:mb-4">
                                             {mealData.name}
                                         </h2>
-                                        <p className="text-gray-700 leading-relaxed mb-6 max-w-2xl">
+                                        <p className="text-gray-700 leading-relaxed mb-4 sm:mb-6 max-w-2xl text-xs sm:text-base">
                                             {mealData.description}
                                         </p>
                                     </div>
@@ -62,19 +64,19 @@ export default function MealDetailsPage() {
                                 </div>
 
                                 {/* Meal Details Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                                     <div>
-                                        <label className="text-sm font-medium text-gray-600">Category:</label>
+                                        <label className="text-xs sm:text-sm font-medium text-gray-600">Category:</label>
                                         <p className="text-gray-900 mt-1 font-medium">{mealData.category}</p>
                                     </div>
 
                                     <div>
-                                        <label className="text-sm font-medium text-gray-600">Price:</label>
+                                        <label className="text-xs sm:text-sm font-medium text-gray-600">Price:</label>
                                         <p className="text-gray-900 mt-1 font-medium">{mealData.price}</p>
                                     </div>
 
                                     <div>
-                                        <label className="text-sm font-medium text-gray-600">Availability time:</label>
+                                        <label className="text-xs sm:text-sm font-medium text-gray-600">Availability time:</label>
                                         <p className="text-gray-900 mt-1 font-medium">{mealData.availabilityTime}</p>
                                     </div>
                                 </div>
@@ -83,16 +85,16 @@ export default function MealDetailsPage() {
                     </Card>
 
                     {/* Action Buttons */}
-                    <div className="flex justify-center gap-4">
+                    <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
                         {mealData.status === 'Active' ? (
                             <Button 
-                                className="bg-[#C72600] hover:bg-red-700 text-white px-8 py-2"
+                                className="bg-[#C72600] hover:bg-red-700 text-white px-6 sm:px-8 py-2"
                             >
                                 Suspend meal
                             </Button>
                         ) : (
                             <Button 
-                                className="bg-green-500 hover:bg-green-600 text-white px-8 py-2"
+                                className="bg-green-500 hover:bg-green-600 text-white px-6 sm:px-8 py-2"
                             >
                                 Activate meal
                             </Button>

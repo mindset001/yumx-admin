@@ -29,65 +29,67 @@ const transactionData = {
 
 export default function TransactionDetailsPage() {
     return (
-        <div className="flex min-h-screen bg-[#FFF2F2]">
+        <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
             {/* Sidebar */}
             <Sidebar />
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
                 {/* Header */}
-                <div className="bg-white border-b px-6 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/finance/transactions">
-                            <Button variant="ghost" size="sm" className="gap-2">
-                                <ArrowLeft className="h-4 w-4" />
-                                Back to Transactions
-                            </Button>
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">Transaction Details</h1>
+                <div className="bg-white border-b px-2 sm:px-4 md:px-6 py-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                        <div className="flex items-center gap-2">
+                            <Link href="/finance/transactions">
+                                <Button variant="ghost" size="sm" className="gap-2">
+                                    <ArrowLeft className="h-4 w-4" />
+                                  
+                                </Button>
+                            </Link>
+                            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Transaction Details</h1>
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex-1 p-6 space-y-6">
+                <div className="flex-1 p-2 sm:p-4 md:p-6 space-y-6">
                     {/* Transaction Information Card */}
                     <Card className="bg-white">
-                        <CardContent className="p-8">
+                        <CardContent className="p-4 sm:p-8">
                             {/* Transaction Title */}
-                            <h2 className="text-2xl font-bold text-[#C72600] mb-8">
+                            <h2 className="text-lg sm:text-2xl font-bold text-[#C72600] mb-4 sm:mb-8">
                                 {transactionData.title}
                             </h2>
 
                             {/* Transaction Details Grid */}
-                            <div className="space-y-4">
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Order ID:</span>
+                            <div className="space-y-2 sm:space-y-4">
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Order ID:</span>
                                     <span className="text-gray-900">{transactionData.orderId}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Time of transaction:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Time of transaction:</span>
                                     <span className="text-gray-900">{transactionData.timeOfTransaction}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Transaction status:</span>
-                                    <Badge className="bg-[#C2E66E] text-[#000] hover:bg-green-100">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Transaction status:</span>
+                                    <Badge className="bg-[#C2E66E] text-[#000] hover:bg-green-100 mt-1 sm:mt-0">
                                         {transactionData.transactionStatus}
                                     </Badge>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Payment status :</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Payment status :</span>
                                     <span className="text-gray-900">{transactionData.paymentStatus}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Payment method:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Payment method:</span>
                                     <span className="text-gray-900">{transactionData.paymentMethod}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-48">Amount</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-36 sm:w-48">Amount</span>
                                     <span className="text-[#C72600] font-bold">{transactionData.amount}</span>
                                 </div>
                             </div>
@@ -96,24 +98,24 @@ export default function TransactionDetailsPage() {
 
                     {/* Customer Information */}
                     <Card className="bg-white">
-                        <CardContent className="p-8">
-                            <h3 className="text-xl font-bold text-[#C72600] mb-6">
+                        <CardContent className="p-4 sm:p-8">
+                            <h3 className="text-base sm:text-xl font-bold text-[#C72600] mb-4 sm:mb-6">
                                 Customer information
                             </h3>
 
-                            <div className="space-y-4">
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Customer name:</span>
+                            <div className="space-y-2 sm:space-y-4">
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-28 sm:w-32">Customer name:</span>
                                     <span className="text-gray-900">{transactionData.customer.name}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Phone number:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-28 sm:w-32">Phone number:</span>
                                     <span className="text-gray-900">{transactionData.customer.phone}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Email:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-28 sm:w-32">Email:</span>
                                     <span className="text-gray-900">{transactionData.customer.email}</span>
                                 </div>
                             </div>
@@ -122,24 +124,24 @@ export default function TransactionDetailsPage() {
 
                     {/* Chef Information */}
                     <Card className="bg-white">
-                        <CardContent className="p-8">
-                            <h3 className="text-xl font-bold text-[#C72600] mb-6">
+                        <CardContent className="p-4 sm:p-8">
+                            <h3 className="text-base sm:text-xl font-bold text-[#C72600] mb-4 sm:mb-6">
                                 Chef information
                             </h3>
 
-                            <div className="space-y-4">
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Customer name:</span>
+                            <div className="space-y-2 sm:space-y-4">
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-28 sm:w-32">Customer name:</span>
                                     <span className="text-gray-900">{transactionData.chef.name}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Phone number:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-28 sm:w-32">Phone number:</span>
                                     <span className="text-gray-900">{transactionData.chef.phone}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Email:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-28 sm:w-32">Email:</span>
                                     <span className="text-gray-900">{transactionData.chef.email}</span>
                                 </div>
                             </div>

@@ -31,52 +31,53 @@ const ticketData = {
 
 export default function SupportDetailsPage() {
     return (
-        <div className="flex min-h-screen bg-[#FFF2F2]">
+        <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
             {/* Sidebar */}
             <Sidebar />
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
                 {/* Header */}
-                <div className=" bg-[#FFF2F2]  px-6 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/support">
-                            <Button variant="ghost" size="sm" className="gap-2">
-                                <ArrowLeft className="h-4 w-4" />
-                               
-                            </Button>
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">Support Ticket Details</h1>
+                <div className="bg-[#FFF2F2] px-2 sm:px-4 md:px-6 py-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                        <div className="flex items-center gap-2">
+                            <Link href="/support">
+                                <Button variant="ghost" size="sm" className="gap-2">
+                                    <ArrowLeft className="h-4 w-4" />
+                                </Button>
+                            </Link>
+                            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Support Ticket Details</h1>
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex-1 p-6 space-y-6">
+                <div className="flex-1 p-2 sm:p-4 md:p-6 space-y-6">
                     {/* Ticket Information Card */}
                     <Card className="bg-white">
-                        <CardContent className="p-8">
+                        <CardContent className="p-4 sm:p-8">
                             {/* Support Title */}
-                            <h2 className="text-2xl font-bold text-[#C72600] mb-8">
+                            <h2 className="text-lg sm:text-2xl font-bold text-[#C72600] mb-4 sm:mb-8">
                                 Support
                             </h2>
 
                             {/* Ticket Details */}
-                            <div className="space-y-4">
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-56">Ticket ID:</span>
+                            <div className="space-y-2 sm:space-y-4">
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-40 sm:w-56">Ticket ID:</span>
                                     <span className="text-gray-900">{ticketData.ticketId}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-56">Submitted date:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-40 sm:w-56">Submitted date:</span>
                                     <div>
                                         <div className="text-gray-900">{ticketData.submittedDate}</div>
                                         <div className="text-gray-500 text-sm">{ticketData.submittedTime}</div>
                                     </div>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-56">Issue category:</span>
-                                    <div className="space-y-2">
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-40 sm:w-56">Issue category:</span>
+                                    <div className="space-y-1 sm:space-y-2">
                                         {ticketData.issueCategory.map((item, index) => (
                                             <div key={index} className="flex items-center gap-2">
                                                 <span className="text-gray-900">{item.name}</span>
@@ -87,8 +88,8 @@ export default function SupportDetailsPage() {
                                     </div>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-56">Order amount requested:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-40 sm:w-56">Order amount requested:</span>
                                     <span className="text-[#C72600] font-bold">{ticketData.orderAmountRequested}</span>
                                 </div>
                             </div>
@@ -97,24 +98,24 @@ export default function SupportDetailsPage() {
 
                     {/* User Information */}
                     <Card className="bg-white">
-                        <CardContent className="p-8">
-                            <h3 className="text-xl font-bold text-[#C72600] mb-6">
+                        <CardContent className="p-4 sm:p-8">
+                            <h3 className="text-base sm:text-xl font-bold text-[#C72600] mb-4 sm:mb-6">
                                 User information
                             </h3>
 
-                            <div className="space-y-4">
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">User name:</span>
+                            <div className="space-y-2 sm:space-y-4">
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-24 sm:w-32">User name:</span>
                                     <span className="text-gray-900">{ticketData.user.name}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Phone number:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-24 sm:w-32">Phone number:</span>
                                     <span className="text-gray-900">{ticketData.user.phone}</span>
                                 </div>
 
-                                <div className="flex">
-                                    <span className="text-gray-600 font-medium w-32">Email:</span>
+                                <div className="flex flex-col sm:flex-row">
+                                    <span className="text-gray-600 font-medium w-24 sm:w-32">Email:</span>
                                     <span className="text-gray-900">{ticketData.user.email}</span>
                                 </div>
                             </div>
@@ -123,15 +124,16 @@ export default function SupportDetailsPage() {
 
                     {/* Messages Section */}
                     <Card className="bg-white">
-                        <CardContent className="p-8">
-                            <div className="flex items-center justify-between mb-6">
+                        <CardContent className="p-4 sm:p-8">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
                                 <div className="relative">
                                     <Link href={`/support/${ticketData.id}/messages`}>
                                         <Button 
-                                            className="bg-[#C2E66E] hover:bg-green-600 text-[#000000] font-[400] px-6 py-2 gap-2"
+                                            className="bg-[#C2E66E] hover:bg-green-600 text-[#000000] font-[400] px-4 sm:px-6 py-2 gap-2"
                                         >
                                             <MessageSquare className="h-4 w-4" />
-                                            View user messages
+                                            <span className="hidden sm:inline">View user messages</span>
+                                            <span className="sm:hidden">Messages</span>
                                         </Button>
                                     </Link>
                                     {/* Message count badge */}
@@ -142,9 +144,9 @@ export default function SupportDetailsPage() {
                             </div>
 
                             {/* Chat bubble */}
-                            <div className="flex justify-end mb-4">
-                                <div className="max-w-xs">
-                                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                            <div className="flex justify-end mb-2 sm:mb-4">
+                                <div className="max-w-xs w-full">
+                                    <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm">
                                         <div className="flex items-center gap-2 mb-2">
                                             <div className="w-6 h-6 bg-[#C72600] rounded-full flex items-center justify-center text-white text-xs font-bold">
                                                 {ticketData.lastMessage.sender}

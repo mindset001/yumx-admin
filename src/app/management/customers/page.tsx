@@ -107,29 +107,29 @@ const statsCards = [
 
 export default function CustomersPage() {
   return (
-    <div className="flex min-h-screen bg-[#FFF2F2]">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="bg-[#FFF2F2] px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-[#C72600]">Customer record</h1>
-            <div className="relative bg-white">
+        <div className="bg-[#FFF2F2] px-2 sm:px-4 md:px-6 py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <h1 className="text-lg sm:text-2xl font-bold text-[#C72600]">Customer record</h1>
+            <div className="relative w-full sm:w-auto bg-white">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Search menu"
-                className="pl-10 w-80"
+                className="pl-10 w-full sm:w-80"
               />
             </div>
           </div>
         </div>
 
-        <div className="flex-1 p-6 space-y-6">
+        <div className="flex-1 p-2 sm:p-4 md:p-6 space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-36 gap-y-8 bg-white py-8 px-12 rounded-lg ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-white py-4 px-2 sm:px-6 md:px-12 rounded-lg">
             {statsCards.map((stat, index) => (
               <Card
                 key={index}
@@ -139,14 +139,14 @@ export default function CustomersPage() {
                   } transition-all duration-300 hover:shadow-lg`}
               >
                 <CardContent className="">
-                  <div className="space-y-2 flex items-center justify-between h-[20px]">
-                    <p className={`text-sm font-medium ${stat.variant === 'primary'
+                  <div className="flex items-center justify-between min-h-[32px]">
+                    <p className={`text-xs sm:text-sm font-medium ${stat.variant === 'primary'
                         ? 'text-red-100'
                         : 'text-[#C72600]'
                       }`}>
                       {stat.title}
                     </p>
-                    <p className={`text-2xl font-bold ${stat.variant === 'primary'
+                    <p className={`text-base sm:text-lg md:text-2xl font-bold ${stat.variant === 'primary'
                         ? 'text-white'
                         : 'text-[#C72600]'
                       }`}>
@@ -162,8 +162,8 @@ export default function CustomersPage() {
           <Card>
             <CardContent className="p-0">
               {/* Table Header */}
-              <div className="bg-[#C72600] text-white px-6 py-4">
-                <div className="grid grid-cols-6 gap-4 text-sm font-medium">
+              <div className="bg-[#C72600] text-white px-2 sm:px-6 py-4 hidden md:block">
+                <div className="grid grid-cols-6 gap-4 text-xs font-medium">
                   <div>Date joined</div>
                   <div>Status</div>
                   <div>User name</div>
@@ -176,8 +176,9 @@ export default function CustomersPage() {
               {/* Table Body */}
               <div className="divide-y divide-gray-200">
                 {customers.map((customer) => (
-                  <div key={customer.id} className="px-6 py-4 hover:bg-gray-50">
-                    <div className="grid grid-cols-6 gap-4 items-center">
+                  <div key={customer.id} className="px-2 sm:px-6 py-4 hover:bg-gray-50">
+                    {/* Responsive: grid for md+, stacked for mobile */}
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 items-center">
                       {/* Date */}
                       <div className="text-sm">
                         <div className="font-medium text-gray-900">{customer.dateJoined}</div>
