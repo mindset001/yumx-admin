@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/images/logo.png"
 import { useAppDispatch, useAppSelector } from "@/lib/store";
@@ -13,7 +14,7 @@ const API_ENDPOINTS = {
   login: process.env.NEXT_PUBLIC_API_URL + '/auth/login' || '/auth/login'
 };
 
-export default function AdminLogin() {
+function AdminLoginInner() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -136,7 +137,6 @@ export default function AdminLogin() {
           priority
         />
         <h2 className="text-xl font-semibold text-gray-900 mb-8">Admin login</h2>
-        
         {isLocked && (
           <div 
             className="w-full p-3 mb-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-md text-sm"
@@ -146,7 +146,6 @@ export default function AdminLogin() {
             Account temporarily locked due to too many failed attempts. Please try again in 5 minutes.
           </div>
         )}
-        
         <form className="w-full flex flex-col gap-6" onSubmit={handleSubmit}>
           <div>
             <input
@@ -160,7 +159,6 @@ export default function AdminLogin() {
               className="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#C72600] w-full disabled:bg-gray-100"
             />
           </div>
-          
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -182,7 +180,6 @@ export default function AdminLogin() {
               {showPassword ? "👁️" : "👁️‍🗨️"}
             </button>
           </div>
-          
           <div className="flex justify-between items-center">
             <div className="text-sm text-gray-600">
               Attempts: {attempts}/5
@@ -197,7 +194,6 @@ export default function AdminLogin() {
               Forgot your password?
             </Link>
           </div>
-          
           {error && (
             <div 
               id="login-error" 
@@ -208,7 +204,6 @@ export default function AdminLogin() {
               {error}
             </div>
           )}
-          
           <button
             type="submit"
             disabled={isLoading || isLocked}
@@ -226,11 +221,18 @@ export default function AdminLogin() {
             ) : isLocked ? "Account Locked" : "Login"}
           </button>
         </form>
-        
         <div className="mt-6 text-center text-sm text-gray-500">
           <p>Secure admin access</p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminLogin() {
+  return (
+    <Suspense>
+      <AdminLoginInner />
+    </Suspense>
   );
 }
