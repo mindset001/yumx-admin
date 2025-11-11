@@ -1,3 +1,6 @@
+'use client'
+
+
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface Customer {
   id: string;
@@ -16,71 +20,41 @@ interface Customer {
   location: string;
 }
 
-const customers: Customer[] = [
-  {
-    id: "1",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Active",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "2",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Suspended",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "3",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Active",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "4",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Active",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "5",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Active",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "6",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Suspended",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "7",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Active",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  }
-];
+
+function useCustomers() {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/customer`;
+        const headers: Record<string, string> = {};
+        if (typeof window !== 'undefined') {
+          const accessToken = localStorage.getItem('accessToken');
+          if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+        }
+        const res = await fetch(endpoint, {
+          method: "GET",
+          headers,
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Failed to fetch customers");
+        const data = await res.json();
+        setCustomers(Array.isArray(data) ? data : (data.customers || []));
+      } catch (err: any) {
+        setError(err.message || "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCustomers();
+  }, []);
+  return { customers, loading, error };
+}
 
 const statsCards = [
   {
@@ -106,6 +80,7 @@ const statsCards = [
 ];
 
 export default function CustomersPage() {
+  const { customers, loading, error } = useCustomers();
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
       {/* Sidebar */}
@@ -129,7 +104,7 @@ export default function CustomersPage() {
 
         <div className="flex-1 p-2 sm:p-4 md:p-6 space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-white py-4 px-2 sm:px-6 md:px-12 rounded-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 bg-white py-4 px-2 sm:px-6 md:px-12 rounded-lg">
             {statsCards.map((stat, index) => (
               <Card
                 key={index}
@@ -175,7 +150,12 @@ export default function CustomersPage() {
 
               {/* Table Body */}
               <div className="divide-y divide-gray-200">
-                {customers.map((customer) => (
+                {loading && <div className="p-4 text-center text-gray-500">Loading customers...</div>}
+                {error && <div className="p-4 text-center text-red-500">{error}</div>}
+                {!loading && !error && customers.length === 0 && (
+                  <div className="p-4 text-center text-gray-500">No customer available</div>
+                )}
+                {!loading && !error && customers.length > 0 && customers.map((customer) => (
                   <div key={customer.id} className="px-2 sm:px-6 py-4 hover:bg-gray-50">
                     {/* Responsive: grid for md+, stacked for mobile */}
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 items-center">

@@ -1,3 +1,5 @@
+'use client'
+
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface Chef {
   id: string;
@@ -16,71 +19,41 @@ interface Chef {
   location: string;
 }
 
-const chefs: Chef[] = [
-  {
-    id: "1",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Approved",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "2",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Pending",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "3",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Approved",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "4",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Approved",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "5",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Approved",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "6",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Pending",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  },
-  {
-    id: "7",
-    dateJoined: "2026-06-01",
-    time: "7:30 AM",
-    status: "Approved",
-    name: "Adam tukur",
-    email: "Adam.tukur@gmail.com",
-    location: "Abuja, Nigeria"
-  }
-];
+
+function useChefs() {
+  const [chefs, setChefs] = useState<Chef[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchChefs = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/chef`;
+        const headers: Record<string, string> = {};
+        if (typeof window !== 'undefined') {
+          const accessToken = localStorage.getItem('accessToken');
+          if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+        }
+        const res = await fetch(endpoint, {
+          method: "GET",
+          headers,
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Failed to fetch chefs");
+        const data = await res.json();
+        setChefs(Array.isArray(data) ? data : (data.chefs || []));
+      } catch (err: any) {
+        setError(err.message || "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchChefs();
+  }, []);
+  return { chefs, loading, error };
+}
 
 const statsCards = [
   {
@@ -106,6 +79,7 @@ const statsCards = [
 ];
 
 export default function ChefsPage() {
+  const { chefs, loading, error } = useChefs();
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
       {/* Sidebar */}
@@ -129,11 +103,11 @@ export default function ChefsPage() {
 
         <div className="flex-1 p-2 sm:p-4 md:p-6 space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-white py-4 px-2 sm:px-6 md:px-12 rounded-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 bg-white py-4 px-2 sm:px-6 md:px-12 rounded-lg">
             {statsCards.map((stat, index) => (
               <Card
                 key={index}
-                className={`${
+                className={`$${
                   stat.variant === 'primary'
                     ? 'bg-[#C72600] text-white border-0'
                     : 'bg-[#FFF2F2] border border-gray-200'
@@ -178,26 +152,31 @@ export default function ChefsPage() {
 
               {/* Table Body */}
               <div className="divide-y divide-gray-200">
-                {chefs.map((chef) => (
+                {loading && <div className="p-4 text-center text-gray-500">Loading chefs...</div>}
+                {error && <div className="p-4 text-center text-red-500">{error}</div>}
+                {!loading && !error && chefs.length === 0 && (
+                  <div className="p-4 text-center text-gray-500">No chef available</div>
+                )}
+                {!loading && !error && chefs.length > 0 && chefs.map((chef) => (
                   <div key={chef.id} className="px-2 sm:px-6 py-4 hover:bg-gray-50">
                     {/* Responsive: grid for md+, stacked for mobile */}
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 items-center">
                       {/* Date */}
                       <div className="text-sm">
-                        <div className="font-medium text-gray-900">{chef.dateJoined}</div>
-                        <div className="text-gray-500">{chef.time}</div>
+                        <div className="font-medium text-gray-900">{chef.dateJoined || "-"}</div>
+                        <div className="text-gray-500">{chef.time || ""}</div>
                       </div>
 
                       {/* Status */}
                       <div>
                         <Badge
-                          className={`${
+                          className={`$${
                             chef.status === 'Approved'
                               ? 'bg-green-100 text-green-800 hover:bg-green-100'
                               : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100'
                           }`}
                         >
-                          {chef.status}
+                          {chef.status || "-"}
                         </Badge>
                       </div>
 
@@ -238,3 +217,4 @@ export default function ChefsPage() {
     </div>
   );
 }
+//

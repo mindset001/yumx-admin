@@ -22,19 +22,12 @@ function AdminLoginInner() {
   const [showPassword, setShowPassword] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const returnUrl = searchParams.get('returnUrl') || '/dashboard';
+  // No need for returnUrl in login page; OTP page will handle post-OTP redirect
 
-  // Check if already authenticated
-  const { token } = useAppSelector((state) => state.auth);
-  React.useEffect(() => {
-    if (token) {
-      router.replace(returnUrl);
-    }
-  }, [token, router, returnUrl]);
 
   // Input sanitization
   const sanitizeInput = (input: string) => {
@@ -80,7 +73,6 @@ function AdminLoginInner() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest"
         },
         credentials: "include",
         body: JSON.stringify({ 
@@ -105,11 +97,26 @@ function AdminLoginInner() {
         throw new Error("Invalid credentials");
       }
 
+      // Save login details (accessToken and user) to Redux and localStorage
+      const data = await response.json();
+      console.log('LOGIN RESPONSE DATA:', data);
+      if (data && data.data && data.data.accessToken) {
+        dispatch(setCredentials({ token: data.data.accessToken, user: null }));
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', data.data.accessToken);
+        }
+        // Optionally, fetch user profile here using the accessToken
+      }
+
       // Reset attempts on successful login
       setAttempts(0);
-      const data = await response.json();
-      dispatch(setCredentials(data));
-      router.replace(returnUrl);
+      setLoginSuccess(true);
+      setTimeout(() => {
+        if (typeof window !== 'undefined' && data && data.data && data.data.accessToken) {
+          localStorage.setItem('accessToken', data.data.accessToken);
+        }
+        router.replace('/admin/login/otp');
+      }, 1200);
     } catch (err) {
       setError("Invalid email or password");
     } finally {
@@ -137,6 +144,11 @@ function AdminLoginInner() {
           priority
         />
         <h2 className="text-xl font-semibold text-gray-900 mb-8">Admin login</h2>
+        {loginSuccess && (
+          <div className="w-full p-3 mb-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-sm text-center" role="alert" aria-live="polite">
+            Login successful! Redirecting to OTP...
+          </div>
+        )}
         {isLocked && (
           <div 
             className="w-full p-3 mb-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-md text-sm"

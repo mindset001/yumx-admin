@@ -15,8 +15,7 @@ export function withAuth<P extends object>(
       // Check if user is not authenticated
       if (!token || !user) {
         // Redirect to login page with return URL
-        const returnUrl = encodeURIComponent(window.location.pathname);
-        router.replace(`/auth/login?returnUrl=${returnUrl}`);
+        router.replace(`/auth/login`);
       }
     }, [token, user, router]);
 

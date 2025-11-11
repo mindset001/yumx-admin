@@ -14,21 +14,20 @@ export default function AdminLayout({
   const { token } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    // Don't protect the login page
-    if (pathname === '/admin/login') {
+    // Allow access to login and OTP page without authentication
+    if (pathname === '/admin/login' || pathname === '/admin/login/otp') {
       return;
     }
 
     // Check if user is not authenticated
     if (!token) {
-      // Redirect to login page with return URL
-      const returnUrl = encodeURIComponent(pathname);
-      router.replace(`/admin/login?returnUrl=${returnUrl}`);
+      // Redirect to login page without return URL
+      router.replace(`/admin/login`);
     }
   }, [token, router, pathname]);
 
-  // If we're on the login page, or if we're authenticated, render the content
-  if (pathname === '/admin/login' || token) {
+  // If we're on the login page, OTP page, or if we're authenticated, render the content
+  if (pathname === '/admin/login' || pathname === '/admin/login/otp' || token) {
     return <>{children}</>;
   }
 
