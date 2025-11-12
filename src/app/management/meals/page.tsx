@@ -22,7 +22,7 @@ interface Meal {
     fullName: string;
   };
   chefName?: string;
-  cuisine?: string | Record<string, any>;
+  cuisine?: string | Record<string, unknown>;
   price?: string;
   amount?: string;
 }
@@ -239,7 +239,7 @@ export default function MealsPage() {
                       {/* Category */}
                       <div className="text-sm text-gray-500">
                         {typeof meal.cuisine === 'object' && meal.cuisine !== null
-                          ? (meal.cuisine as any)?.name || String(meal.cuisine)
+                          ? String((meal.cuisine as Record<string, unknown>)?.name || '-')
                           : String(meal.cuisine || "-")}
                       </div>
 
