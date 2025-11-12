@@ -1,3 +1,5 @@
+'use client'
+
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface Meal {
   id: string;
@@ -17,78 +20,44 @@ interface Meal {
   price: string;
 }
 
-const meals: Meal[] = [
-  {
-    id: "1",
-    submittedDate: "2026-09-01",
-    time: "7:30 AM",
-    status: "Active",
-    mealName: "Chicken shawarma",
-    chef: "Adam tukur",
-    category: "Snacks",
-    price: "NGN300"
-  },
-  {
-    id: "2",
-    submittedDate: "2026-09-01",
-    time: "7:30 AM",
-    status: "Suspended",
-    mealName: "Chicken pizza",
-    chef: "Adam tukur",
-    category: "Dish",
-    price: "NGN500"
-  },
-  {
-    id: "3",
-    submittedDate: "2026-09-01",
-    time: "7:30 AM",
-    status: "Active",
-    mealName: "Chicken pizza",
-    chef: "Adam tukur",
-    category: "Dish",
-    price: "NGN500"
-  },
-  {
-    id: "4",
-    submittedDate: "2026-09-01",
-    time: "7:30 AM",
-    status: "Active",
-    mealName: "Chicken pizza",
-    chef: "Adam tukur",
-    category: "Dish",
-    price: "NGN500"
-  },
-  {
-    id: "5",
-    submittedDate: "2026-09-01",
-    time: "7:30 AM",
-    status: "Active",
-    mealName: "Chicken pizza",
-    chef: "Adam tukur",
-    category: "Dish",
-    price: "NGN500"
-  },
-  {
-    id: "6",
-    submittedDate: "2026-09-01",
-    time: "7:30 AM",
-    status: "Suspended",
-    mealName: "Chicken pizza",
-    chef: "Adam tukur",
-    category: "Dish",
-    price: "NGN500"
-  },
-  {
-    id: "7",
-    submittedDate: "2026-09-01",
-    time: "7:30 AM",
-    status: "Active",
-    mealName: "Chicken pizza",
-    chef: "Adam tukur",
-    category: "Dish",
-    price: "NGN500"
-  }
-];
+function useMeals() {
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMeals = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/meal`;
+        const headers: Record<string, string> = {};
+        if (typeof window !== 'undefined') {
+          const accessToken = localStorage.getItem('accessToken');
+          if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+        }
+        const res = await fetch(endpoint, {
+          method: "GET",
+          headers,
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Failed to fetch meals");
+        const data = await res.json();
+        setMeals(Array.isArray(data) ? data : (data.meals || []));
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Unknown error");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMeals();
+  }, []);
+  return { meals, loading, error };
+}
 
 const statsCards = [
   {
@@ -114,6 +83,8 @@ const statsCards = [
 ];
 
 export default function MealsPage() {
+  const { meals, loading, error } = useMeals();
+  
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
       {/* Sidebar */}
@@ -137,7 +108,7 @@ export default function MealsPage() {
 
         <div className="flex-1 p-2 sm:p-4 md:p-6 space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-white py-4 px-2 sm:px-6 md:px-12 rounded-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 bg-white py-4 px-2 sm:px-6 md:px-12 rounded-lg">
             {statsCards.map((stat, index) => (
               <Card
                 key={index}
@@ -187,14 +158,19 @@ export default function MealsPage() {
 
               {/* Table Body */}
               <div className="divide-y divide-gray-200">
-                {meals.map((meal) => (
+                {loading && <div className="p-4 text-center text-gray-500">Loading meals...</div>}
+                {error && <div className="p-4 text-center text-red-500">{error}</div>}
+                {!loading && !error && meals.length === 0 && (
+                  <div className="p-4 text-center text-gray-500">No meals available</div>
+                )}
+                {!loading && !error && meals.length > 0 && meals.map((meal) => (
                   <div key={meal.id} className="px-2 sm:px-6 py-4 hover:bg-gray-50">
                     {/* Responsive: grid for md+, stacked for mobile */}
                     <div className="grid grid-cols-1 md:grid-cols-7 gap-2 md:gap-4 items-center">
                       {/* Date */}
                       <div className="text-sm">
-                        <div className="font-medium text-gray-900">{meal.submittedDate}</div>
-                        <div className="text-gray-500">{meal.time}</div>
+                        <div className="font-medium text-gray-900">{meal.submittedDate || "-"}</div>
+                        <div className="text-gray-500">{meal.time || ""}</div>
                       </div>
 
                       {/* Status */}
@@ -206,7 +182,7 @@ export default function MealsPage() {
                               : 'bg-[#FFE6B5] text-black hover:bg-yellow-100'
                           }`}
                         >
-                          {meal.status}
+                          {meal.status || "-"}
                         </Badge>
                       </div>
 

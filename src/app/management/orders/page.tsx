@@ -1,3 +1,5 @@
+'use client'
+
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface Order {
   id: string;
@@ -18,63 +21,44 @@ interface Order {
   deliveryETA: string;
 }
 
-const orders: Order[] = [
-  {
-    id: "1",
-    orderTime: "2028-09-01",
-    time: "7:30 AM",
-    status: "Active",
-    customerName: "Adam tukur",
-    chef: "Adam tukur",
-    meal: "Chicken shawarma",
-    amount: "NGN1000",
-    deliveryETA: "2028-09-01"
-  },
-  {
-    id: "2",
-    orderTime: "2028-09-01",
-    time: "7:30 AM",
-    status: "Suspended",
-    customerName: "Adam tukur",
-    chef: "Adam tukur",
-    meal: "Dish",
-    amount: "NGN500",
-    deliveryETA: "2028-09-01"
-  },
-  {
-    id: "3",
-    orderTime: "2028-09-01",
-    time: "7:30 AM",
-    status: "Active",
-    customerName: "Adam tukur",
-    chef: "Adam tukur",
-    meal: "Dish",
-    amount: "NGN500",
-    deliveryETA: "2028-09-01"
-  },
-  {
-    id: "4",
-    orderTime: "2028-09-01",
-    time: "7:30 AM",
-    status: "Active",
-    customerName: "Adam tukur",
-    chef: "Adam tukur",
-    meal: "Dish",
-    amount: "NGN500",
-    deliveryETA: "2028-09-01"
-  },
-  {
-    id: "5",
-    orderTime: "2028-09-01",
-    time: "7:30 AM",
-    status: "Active",
-    customerName: "Adam tukur",
-    chef: "Adam tukur",
-    meal: "Dish",
-    amount: "NGN500",
-    deliveryETA: "2028-09-01"
-  }
-];
+function useOrders() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/order`;
+        const headers: Record<string, string> = {};
+        if (typeof window !== 'undefined') {
+          const accessToken = localStorage.getItem('accessToken');
+          if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+        }
+        const res = await fetch(endpoint, {
+          method: "GET",
+          headers,
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Failed to fetch orders");
+        const data = await res.json();
+        setOrders(Array.isArray(data) ? data : (data.orders || []));
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Unknown error");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, []);
+  return { orders, loading, error };
+}
 
 const statsCards = [
   {
@@ -100,6 +84,8 @@ const statsCards = [
 ];
 
 export default function OrdersPage() {
+  const { orders, loading, error } = useOrders();
+  
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
       {/* Sidebar */}
@@ -123,7 +109,7 @@ export default function OrdersPage() {
 
         <div className="flex-1 p-2 sm:p-4 md:p-6 space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-white py-4 px-2 sm:px-6 md:px-12 rounded-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 bg-white py-4 px-2 sm:px-6 md:px-12 rounded-lg">
             {statsCards.map((stat, index) => (
               <Card
                 key={index}
@@ -174,14 +160,19 @@ export default function OrdersPage() {
 
               {/* Table Body */}
               <div className="divide-y divide-gray-200">
-                {orders.map((order) => (
+                {loading && <div className="p-4 text-center text-gray-500">Loading orders...</div>}
+                {error && <div className="p-4 text-center text-red-500">{error}</div>}
+                {!loading && !error && orders.length === 0 && (
+                  <div className="p-4 text-center text-gray-500">No orders available</div>
+                )}
+                {!loading && !error && orders.length > 0 && orders.map((order) => (
                   <div key={order.id} className="px-2 sm:px-6 py-4 hover:bg-gray-50">
                     {/* Responsive: grid for md+, stacked for mobile */}
                     <div className="grid grid-cols-1 md:grid-cols-8 gap-2 md:gap-4 items-center">
                       {/* Order Time */}
                       <div className="text-sm">
-                        <div className="font-medium text-gray-900">{order.orderTime}</div>
-                        <div className="text-gray-500">{order.time}</div>
+                        <div className="font-medium text-gray-900">{order.orderTime || "-"}</div>
+                        <div className="text-gray-500">{order.time || ""}</div>
                       </div>
 
                       {/* Status */}
@@ -193,7 +184,7 @@ export default function OrdersPage() {
                               : 'bg-[#FFE6B5] text-yellow-800 hover:bg-yellow-100'
                           }`}
                         >
-                          {order.status}
+                          {order.status || "-"}
                         </Badge>
                       </div>
 

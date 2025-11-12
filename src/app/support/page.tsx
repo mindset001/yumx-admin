@@ -1,3 +1,5 @@
+'use client'
+
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface SupportTicket {
   id: string;
@@ -17,90 +20,48 @@ interface SupportTicket {
   issueSummary: string;
 }
 
-const supportTickets: SupportTicket[] = [
-  {
-    id: "1",
-    dateIssued: "2028-09-01",
-    time: "7:30 AM",
-    status: "Open",
-    refundId: "#618292",
-    issuerName: "Adam tukur",
-    role: "User",
-    issueSummary: "Network issues"
-  },
-  {
-    id: "2",
-    dateIssued: "2028-09-01",
-    time: "7:30 AM",
-    status: "In progress",
-    refundId: "#484949",
-    issuerName: "Adam tukur",
-    role: "User",
-    issueSummary: "Refund request"
-  },
-  {
-    id: "3",
-    dateIssued: "2028-09-01",
-    time: "7:30 AM",
-    status: "Successful",
-    refundId: "#484949",
-    issuerName: "Adam tukur",
-    role: "User",
-    issueSummary: "Network issues"
-  },
-  {
-    id: "4",
-    dateIssued: "2028-09-01",
-    time: "7:30 AM",
-    status: "Successful",
-    refundId: "#484949",
-    issuerName: "Adam tukur",
-    role: "User",
-    issueSummary: "Network issues"
-  },
-  {
-    id: "5",
-    dateIssued: "2028-09-01",
-    time: "7:30 AM",
-    status: "Successful",
-    refundId: "#484949",
-    issuerName: "Adam tukur",
-    role: "User",
-    issueSummary: "Refund request"
-  },
-  {
-    id: "6",
-    dateIssued: "2028-09-01",
-    time: "7:30 AM",
-    status: "Pending",
-    refundId: "#484949",
-    issuerName: "Adam tukur",
-    role: "User",
-    issueSummary: "Refund request"
-  },
-  {
-    id: "7",
-    dateIssued: "2028-09-01",
-    time: "7:30 AM",
-    status: "Successful",
-    refundId: "#484949",
-    issuerName: "Adam tukur",
-    role: "User",
-    issueSummary: "Network issues"
-  },
-  {
-    id: "8",
-    dateIssued: "2028-09-01",
-    time: "7:30 AM",
-    status: "Successful",
-    refundId: "#484949",
-    issuerName: "Adam tukur",
-    role: "User",
-    issueSummary: "Refund request"
-  }
-];
+function useSupportTickets() {
+  const [supportTickets, setSupportTickets] = useState<SupportTicket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSupportTickets = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/support`;
+        const headers: Record<string, string> = {};
+        if (typeof window !== 'undefined') {
+          const accessToken = localStorage.getItem('accessToken');
+          if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+        }
+        const res = await fetch(endpoint, {
+          method: "GET",
+          headers,
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Failed to fetch support tickets");
+        const data = await res.json();
+        setSupportTickets(Array.isArray(data) ? data : (data.supportTickets || []));
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Unknown error");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSupportTickets();
+  }, []);
+  return { supportTickets, loading, error };
+}
 
 export default function SupportPage() {
+  const { supportTickets, loading, error } = useSupportTickets();
+
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case 'Open':
@@ -156,20 +117,25 @@ export default function SupportPage() {
 
               {/* Table Body */}
               <div className="divide-y divide-gray-200">
-                {supportTickets.map((ticket) => (
+                {loading && <div className="p-4 text-center text-gray-500">Loading support tickets...</div>}
+                {error && <div className="p-4 text-center text-red-500">{error}</div>}
+                {!loading && !error && supportTickets.length === 0 && (
+                  <div className="p-4 text-center text-gray-500">No support tickets available</div>
+                )}
+                {!loading && !error && supportTickets.length > 0 && supportTickets.map((ticket) => (
                   <div key={ticket.id} className="px-2 sm:px-6 py-4 hover:bg-gray-50">
                     {/* Responsive: grid for md+, stacked for mobile */}
                     <div className="grid grid-cols-1 md:grid-cols-7 gap-2 md:gap-4 items-center">
                       {/* Date Issued */}
                       <div className="text-sm">
-                        <div className="font-medium text-gray-900">{ticket.dateIssued}</div>
-                        <div className="text-gray-500">{ticket.time}</div>
+                        <div className="font-medium text-gray-900">{ticket.dateIssued || "-"}</div>
+                        <div className="text-gray-500">{ticket.time || ""}</div>
                       </div>
 
                       {/* Status */}
                       <div>
                         <Badge className={getStatusBadgeColor(ticket.status)}>
-                          {ticket.status}
+                          {ticket.status || "-"}
                         </Badge>
                       </div>
 
