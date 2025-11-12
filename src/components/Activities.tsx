@@ -78,7 +78,7 @@ export function Activities() {
         }
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || ""}/meal?page=1&limit=3`,
+          '/api/meal?page=1&limit=5',
           {
             headers,
             credentials: "include",

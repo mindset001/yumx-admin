@@ -33,7 +33,7 @@ export default function OtpPage() {
     setError("");
     setIsLoading(true);
     try {
-      const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/auth/login/verify/${code}`;
+      const endpoint = `/api/auth/login/verify/${code}`;
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };

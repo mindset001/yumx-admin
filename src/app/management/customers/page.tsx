@@ -48,7 +48,7 @@ function useCustomers(page: number = 1, limit: number = 10) {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/customer?page=${page}&limit=${limit}`;
+        const endpoint = `/api/customer?page=${page}&limit=${limit}`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');

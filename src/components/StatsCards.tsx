@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { useEffect, useState } from "react"
+import { getAuthHeaders } from "@/lib/api"
 
 interface StatCard {
   title: string
@@ -30,27 +31,23 @@ export function StatsCards() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const headers: Record<string, string> = {}
-        if (typeof window !== 'undefined') {
-          const accessToken = localStorage.getItem('accessToken')
-          if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`
-        }
+        const headers = getAuthHeaders()
 
         // Fetch all stats in parallel
         const [ordersRes, chefsRes, customersRes, mealsRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}/order?page=1&limit=1`, {
+          fetch('/api/order?page=1&limit=1', {
             headers,
             credentials: "include"
           }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}/chef?page=1&limit=1`, {
+          fetch('/api/chef?page=1&limit=1', {
             headers,
             credentials: "include"
           }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}/customer?page=1&limit=1`, {
+          fetch('/api/customer?page=1&limit=1', {
             headers,
             credentials: "include"
           }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}/meal?page=1&limit=1`, {
+          fetch('/api/meal?page=1&limit=1', {
             headers,
             credentials: "include"
           })

@@ -31,7 +31,7 @@ function useOrders() {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/order`;
+        const endpoint = `/api/order`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');

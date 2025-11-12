@@ -81,7 +81,7 @@ export function MenuSubmission() {
         }
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || ""}/meal?page=1&limit=3`,
+          '/api/meal?page=1&limit=3',
           {
             headers,
             credentials: "include",
