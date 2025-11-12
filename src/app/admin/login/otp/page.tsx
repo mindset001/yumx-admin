@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/store";
 import { setCredentials } from "@/lib/features/auth/authSlice";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com';
-
 export default function OtpPage() {
   // Debug: Log saved login details
   if (typeof window !== 'undefined') {
@@ -35,7 +33,7 @@ export default function OtpPage() {
     setError("");
     setIsLoading(true);
     try {
-      const endpoint = `${API_URL}/auth/login/verify/${code}`;
+      const endpoint = `/api/auth/login/verify/${code}`;
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };

@@ -47,7 +47,7 @@ function useChefs(page: number = 1, limit: number = 10) {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/chef?page=${page}&limit=${limit}`;
+        const endpoint = `/api/chef?page=${page}&limit=${limit}`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');
@@ -56,7 +56,6 @@ function useChefs(page: number = 1, limit: number = 10) {
         const res = await fetch(endpoint, {
           method: "GET",
           headers,
-          credentials: "include",
         });
         if (!res.ok) throw new Error("Failed to fetch chefs");
         const data = await res.json();

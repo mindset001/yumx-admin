@@ -45,10 +45,9 @@ export function SalesChart() {
         }
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/customer?page=1&limit=50`,
+          '/api/customer?page=1&limit=50',
           {
             headers,
-            credentials: "include",
           }
         );
 
@@ -155,10 +154,9 @@ export function VisitorsChart() {
         }
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/customer?page=1&limit=50`,
+          '/api/customer?page=1&limit=50',
           {
             headers,
-            credentials: "include",
           }
         );
 

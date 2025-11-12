@@ -9,11 +9,9 @@ import Logo from "../../../../public/images/logo.png"
 import { useAppDispatch, useAppSelector } from "@/lib/store";
 import { setCredentials } from "@/lib/features/auth/authSlice";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com';
-
 // API endpoints configuration
 const API_ENDPOINTS = {
-  login: `${API_URL}/auth/login`
+  login: '/api/auth/login'
 };
 
 function AdminLoginInner() {

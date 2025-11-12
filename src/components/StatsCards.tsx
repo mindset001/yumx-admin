@@ -35,21 +35,17 @@ export function StatsCards() {
 
         // Fetch all stats in parallel
         const [ordersRes, chefsRes, customersRes, mealsRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/order?page=1&limit=1`, {
+          fetch('/api/order?page=1&limit=1', {
             headers,
-            credentials: "include"
           }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/chef?page=1&limit=1`, {
+          fetch('/api/chef?page=1&limit=1', {
             headers,
-            credentials: "include"
           }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/customer?page=1&limit=1`, {
+          fetch('/api/customer?page=1&limit=1', {
             headers,
-            credentials: "include"
           }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/meal?page=1&limit=1`, {
+          fetch('/api/meal?page=1&limit=1', {
             headers,
-            credentials: "include"
           })
         ])
 
