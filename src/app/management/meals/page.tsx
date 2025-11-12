@@ -11,26 +11,49 @@ import { useEffect, useState } from "react";
 
 interface Meal {
   id: string;
-  submittedDate: string;
-  time: string;
+  createdAt: string;
+  submittedDate?: string;
+  time?: string;
   status: 'Active' | 'Suspended';
-  mealName: string;
-  chef: string;
-  category: string;
-  price: string;
+  mealName?: string;
+  name?: string;
+  title?: string;
+  chef: {
+    fullName: string;
+  };
+  chefName?: string;
+  cuisine?: string | Record<string, any>;
+  price?: string;
+  amount?: string;
 }
 
-function useMeals() {
+// Format date to DD-MM-YYYY
+function formatDate(dateString: string): string {
+  if (!dateString) return "-";
+  try {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  } catch {
+    return dateString;
+  }
+}
+
+function useMeals(page: number = 1, limit: number = 10) {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const fetchMeals = async () => {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/meal`;
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/meal?page=${page}&limit=${limit}`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');
@@ -43,7 +66,15 @@ function useMeals() {
         });
         if (!res.ok) throw new Error("Failed to fetch meals");
         const data = await res.json();
-        setMeals(Array.isArray(data) ? data : (data.meals || []));
+        console.log('mealdata response:', data);
+        
+        // Extract meals from nested data structure: data.data.data
+        const mealsArray = data?.data?.data || data?.data || data || [];
+        const totalCount = data?.data?.total || mealsArray.length;
+        console.log('extracted meals:', mealsArray);
+        setMeals(Array.isArray(mealsArray) ? mealsArray : []);
+        setTotal(totalCount);
+        setTotalPages(Math.ceil(totalCount / limit));
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -55,35 +86,44 @@ function useMeals() {
       }
     };
     fetchMeals();
-  }, []);
-  return { meals, loading, error };
+  }, [page, limit]);
+  return { meals, loading, error, total, totalPages };
 }
 
-const statsCards = [
-  {
-    title: "Total meals",
-    value: "25",
-    variant: 'primary' as const
-  },
-  {
-    title: "Active meals",
-    value: "25",
-    variant: 'secondary' as const
-  },
-  {
-    title: "Not active meals",
-    value: "25",
-    variant: 'secondary' as const
-  },
-  {
-    title: "Total ordered meals",
-    value: "25",
-    variant: 'primary' as const
-  }
-];
-
 export default function MealsPage() {
-  const { meals, loading, error } = useMeals();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const { meals, loading, error, total, totalPages } = useMeals(currentPage, itemsPerPage);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const statsCards = [
+    {
+      title: "Total meals",
+      value: total.toString(),
+      variant: 'primary' as const
+    },
+    {
+      title: "Active meals",
+      value: "25",
+      variant: 'secondary' as const
+    },
+    {
+      title: "Not active meals",
+      value: "25",
+      variant: 'secondary' as const
+    },
+    {
+      title: "Total ordered meals",
+      value: "25",
+      variant: 'primary' as const
+    }
+  ];
   
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
@@ -169,7 +209,7 @@ export default function MealsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-7 gap-2 md:gap-4 items-center">
                       {/* Date */}
                       <div className="text-sm">
-                        <div className="font-medium text-gray-900">{meal.submittedDate || "-"}</div>
+                        <div className="font-medium text-gray-900">{formatDate(meal.createdAt || meal.submittedDate || "")}</div>
                         <div className="text-gray-500">{meal.time || ""}</div>
                       </div>
 
@@ -188,22 +228,24 @@ export default function MealsPage() {
 
                       {/* Meal Name */}
                       <div className="text-sm font-medium text-gray-900">
-                        {meal.mealName}
+                        {String(meal.mealName || meal.name || meal.title || "-")}
                       </div>
 
                       {/* Chef */}
                       <div className="text-sm text-gray-500">
-                        {meal.chef}
+                        {meal.chef?.fullName || "-"}
                       </div>
 
                       {/* Category */}
                       <div className="text-sm text-gray-500">
-                        {meal.category}
+                        {typeof meal.cuisine === 'object' && meal.cuisine !== null
+                          ? (meal.cuisine as any)?.name || String(meal.cuisine)
+                          : String(meal.cuisine || "-")}
                       </div>
 
                       {/* Price */}
                       <div className="text-sm font-medium text-gray-900">
-                        {meal.price}
+                        {String(meal.price || meal.amount || "-")}
                       </div>
 
                       {/* Action */}
@@ -223,6 +265,90 @@ export default function MealsPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Pagination */}
+          {!loading && !error && totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 rounded-b-lg">
+              <div className="flex-1 flex justify-between sm:hidden">
+                <Button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  variant="outline"
+                  size="sm"
+                >
+                  Previous
+                </Button>
+                <Button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  variant="outline"
+                  size="sm"
+                >
+                  Next
+                </Button>
+              </div>
+              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm text-gray-700">
+                    Showing <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to{' '}
+                    <span className="font-medium">
+                      {Math.min(currentPage * itemsPerPage, total)}
+                    </span>{' '}
+                    of <span className="font-medium">{total}</span> results
+                  </p>
+                </div>
+                <div>
+                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <Button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      variant="outline"
+                      size="sm"
+                      className="relative inline-flex items-center px-2 py-2 rounded-l-md"
+                    >
+                      Previous
+                    </Button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                      // Show first page, last page, current page, and pages around current
+                      if (
+                        page === 1 ||
+                        page === totalPages ||
+                        (page >= currentPage - 1 && page <= currentPage + 1)
+                      ) {
+                        return (
+                          <Button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="sm"
+                            className={`relative inline-flex items-center px-4 py-2 ${
+                              currentPage === page
+                                ? 'bg-[#C72600] text-white hover:bg-red-700'
+                                : ''
+                            }`}
+                          >
+                            {page}
+                          </Button>
+                        );
+                      } else if (page === currentPage - 2 || page === currentPage + 2) {
+                        return <span key={page} className="relative inline-flex items-center px-4 py-2 text-sm">...</span>;
+                      }
+                      return null;
+                    })}
+                    <Button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      variant="outline"
+                      size="sm"
+                      className="relative inline-flex items-center px-2 py-2 rounded-r-md"
+                    >
+                      Next
+                    </Button>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

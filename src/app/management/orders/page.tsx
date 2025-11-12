@@ -45,6 +45,7 @@ function useOrders() {
         if (!res.ok) throw new Error("Failed to fetch orders");
         const data = await res.json();
         setOrders(Array.isArray(data) ? data : (data.orders || []));
+        console.log('ordersdata', data);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);

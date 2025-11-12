@@ -16,9 +16,11 @@ import {
   X as CloseIcon
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
+import { useAppDispatch } from "@/lib/store";
+import { logout } from "@/lib/features/auth/authSlice";
 
 const sidebarItems = [
   {
@@ -76,8 +78,29 @@ const sidebarItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleLogout = () => {
+    try {
+      // Clear all auth data from localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('user');
+        localStorage.removeItem('auth');
+      }
+      
+      // Clear Redux state
+      dispatch(logout());
+      
+      // Redirect to login page
+      router.replace('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const toggleDropdown = (itemTitle: string) => {
     setOpenDropdowns(prev => ({
@@ -171,7 +194,11 @@ export function Sidebar() {
         </div>
         {/* Bottom Section - Logout */}
         <div className="p-4 border-t border-gray-200">
-          <Button variant="ghost" className="w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-50">
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+            onClick={handleLogout}
+          >
             <LogOut className="h-4 w-4" />
             Logout
           </Button>

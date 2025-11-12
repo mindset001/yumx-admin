@@ -11,25 +11,44 @@ import { useEffect, useState } from "react";
 
 interface Customer {
   id: string;
-  dateJoined: string;
-  time: string;
-  status: 'Active' | 'Suspended';
-  name: string;
+  createdAt: string;
+  dateJoined?: string;
+  time?: string;
+  userStatus: 'Active' | 'Suspended';
+  fullName?: string;
+  name?: string;
   email: string;
-  location: string;
+  address?: string;
+  location?: string;
 }
 
-function useCustomers() {
+// Format date to DD-MM-YYYY
+function formatDate(dateString: string): string {
+  if (!dateString) return "-";
+  try {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  } catch {
+    return dateString;
+  }
+}
+
+function useCustomers(page: number = 1, limit: number = 10) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const fetchCustomers = async () => {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/customer`;
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/customer?page=${page}&limit=${limit}`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');
@@ -42,7 +61,15 @@ function useCustomers() {
         });
         if (!res.ok) throw new Error("Failed to fetch customers");
         const data = await res.json();
-        setCustomers(Array.isArray(data) ? data : (data.customers || []));
+        console.log('customerdata response:', data);
+        
+        // Extract customers from nested data structure: data.data.data
+        const customersArray = data?.data?.data || data?.data || data || [];
+        const totalCount = data?.data?.total || customersArray.length;
+        console.log('extracted customers:', customersArray);
+        setCustomers(Array.isArray(customersArray) ? customersArray : []);
+        setTotal(totalCount);
+        setTotalPages(Math.ceil(totalCount / limit));
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -54,35 +81,45 @@ function useCustomers() {
       }
     };
     fetchCustomers();
-  }, []);
-  return { customers, loading, error };
+  }, [page, limit]);
+  return { customers, loading, error, total, totalPages };
 }
 
-const statsCards = [
-  {
-    title: "Total customers",
-    value: "25",
-    variant: 'primary' as const
-  },
-  {
-    title: "Active customers",
-    value: "25",
-    variant: 'secondary' as const
-  },
-  {
-    title: "Not active customers",
-    value: "25",
-    variant: 'secondary' as const
-  },
-  {
-    title: "Total customers order",
-    value: "25",
-    variant: 'primary' as const
-  }
-];
-
 export default function CustomersPage() {
-  const { customers, loading, error } = useCustomers();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const { customers, loading, error, total, totalPages } = useCustomers(currentPage, itemsPerPage);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const statsCards = [
+    {
+      title: "Total customers",
+      value: total.toString(),
+      variant: 'primary' as const
+    },
+    {
+      title: "Active customers",
+      value: "25",
+      variant: 'secondary' as const
+    },
+    {
+      title: "Not active customers",
+      value: "25",
+      variant: 'secondary' as const
+    },
+    {
+      title: "Total customers order",
+      value: "25",
+      variant: 'primary' as const
+    }
+  ];
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#FFF2F2]">
       {/* Sidebar */}
@@ -163,25 +200,25 @@ export default function CustomersPage() {
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 items-center">
                       {/* Date */}
                       <div className="text-sm">
-                        <div className="font-medium text-gray-900">{customer.dateJoined}</div>
-                        <div className="text-gray-500">{customer.time}</div>
+                        <div className="font-medium text-gray-900">{formatDate(customer.createdAt || customer.dateJoined || "")}</div>
+                        <div className="text-gray-500">{customer.time || ""}</div>
                       </div>
 
                       {/* Status */}
                       <div>
                         <Badge
-                          className={`${customer.status === 'Active'
+                          className={`${customer.userStatus === 'Active'
                               ? 'bg-green-100 text-green-800 hover:bg-green-100'
                               : 'bg-red-100 text-red-800 hover:bg-red-100'
                             }`}
                         >
-                          {customer.status}
+                          {customer.userStatus}
                         </Badge>
                       </div>
 
                       {/* Name */}
                       <div className="text-sm font-medium text-gray-900">
-                        {customer.name}
+                        {customer.name || "-"}
                       </div>
 
                       {/* Email */}
@@ -191,7 +228,7 @@ export default function CustomersPage() {
 
                       {/* Location */}
                       <div className="text-sm text-gray-500">
-                        {customer.location}
+                        {customer.address || customer.location || "-"}
                       </div>
 
                       {/* Action */}
@@ -211,6 +248,90 @@ export default function CustomersPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Pagination */}
+          {!loading && !error && totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 rounded-b-lg">
+              <div className="flex-1 flex justify-between sm:hidden">
+                <Button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  variant="outline"
+                  size="sm"
+                >
+                  Previous
+                </Button>
+                <Button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  variant="outline"
+                  size="sm"
+                >
+                  Next
+                </Button>
+              </div>
+              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm text-gray-700">
+                    Showing <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to{' '}
+                    <span className="font-medium">
+                      {Math.min(currentPage * itemsPerPage, total)}
+                    </span>{' '}
+                    of <span className="font-medium">{total}</span> results
+                  </p>
+                </div>
+                <div>
+                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <Button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      variant="outline"
+                      size="sm"
+                      className="relative inline-flex items-center px-2 py-2 rounded-l-md"
+                    >
+                      Previous
+                    </Button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                      // Show first page, last page, current page, and pages around current
+                      if (
+                        page === 1 ||
+                        page === totalPages ||
+                        (page >= currentPage - 1 && page <= currentPage + 1)
+                      ) {
+                        return (
+                          <Button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="sm"
+                            className={`relative inline-flex items-center px-4 py-2 ${
+                              currentPage === page
+                                ? 'bg-[#C72600] text-white hover:bg-red-700'
+                                : ''
+                            }`}
+                          >
+                            {page}
+                          </Button>
+                        );
+                      } else if (page === currentPage - 2 || page === currentPage + 2) {
+                        return <span key={page} className="relative inline-flex items-center px-4 py-2 text-sm">...</span>;
+                      }
+                      return null;
+                    })}
+                    <Button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      variant="outline"
+                      size="sm"
+                      className="relative inline-flex items-center px-2 py-2 rounded-r-md"
+                    >
+                      Next
+                    </Button>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
