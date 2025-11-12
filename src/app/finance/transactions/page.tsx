@@ -63,22 +63,22 @@ function useTransactions() {
 const statsCards = [
   {
     title: "Total transactions",
-    value: "25",
+    value: "0",
     variant: 'primary' as const
   },
   {
     title: "Completed transactions",
-    value: "25",
+    value: "0",
     variant: 'secondary' as const
   },
   {
     title: "Uncompleted transactions",
-    value: "25",
+    value: "0",
     variant: 'secondary' as const
   },
   {
     title: "Failed transactions",
-    value: "25",
+    value: "0",
     variant: 'primary' as const
   }
 ];

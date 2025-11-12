@@ -10,14 +10,29 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface SupportTicket {
-  id: string;
-  dateIssued: string;
-  time: string;
-  status: 'Open' | 'In progress' | 'Successful' | 'Pending';
-  refundId: string;
-  issuerName: string;
-  role: string;
-  issueSummary: string;
+  _id: string;
+  id?: string;
+  supportNumber?: string;
+  dateIssued?: string;
+  createdAt?: string;
+  time?: string;
+  status?: string;
+  refundId?: string;
+  issuerName?: string;
+  customer?: {
+    fullName?: string;
+    FullName?: string;
+    name?: string;
+  };
+  chef?: {
+    fullName?: string;
+    FullName?: string;
+    name?: string;
+  };
+  role?: string;
+  issueSummary?: string;
+  message?: string;
+  description?: string;
 }
 
 function useSupportTickets() {
@@ -30,7 +45,7 @@ function useSupportTickets() {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/support`;
+          const endpoint = `/api/support`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');
@@ -43,7 +58,8 @@ function useSupportTickets() {
         });
         if (!res.ok) throw new Error("Failed to fetch support tickets");
         const data = await res.json();
-        setSupportTickets(Array.isArray(data) ? data : (data.supportTickets || []));
+        setSupportTickets(Array.isArray(data) ? data : (data?.data?.data || data.supportTickets || []));
+        console.log('supportTicketsdata', data);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -122,46 +138,63 @@ export default function SupportPage() {
                 {!loading && !error && supportTickets.length === 0 && (
                   <div className="p-4 text-center text-gray-500">No support tickets available</div>
                 )}
-                {!loading && !error && supportTickets.length > 0 && supportTickets.map((ticket) => (
-                  <div key={ticket.id} className="px-2 sm:px-6 py-4 hover:bg-gray-50">
+                {!loading && !error && supportTickets.length > 0 && supportTickets.map((ticket) => {
+                  const ticketId = ticket._id || ticket.id || '';
+                  const dateIssued = ticket.dateIssued || ticket.createdAt || '-';
+                  const formattedDate = dateIssued !== '-' ? new Date(dateIssued).toLocaleDateString() : '-';
+                  const formattedTime = dateIssued !== '-' ? new Date(dateIssued).toLocaleTimeString() : '';
+                  const issuerName = ticket.issuerName || 
+                                    ticket.customer?.fullName || 
+                                    ticket.customer?.FullName || 
+                                    ticket.customer?.name ||
+                                    ticket.chef?.fullName ||
+                                    ticket.chef?.FullName ||
+                                    ticket.chef?.name || 
+                                    '-';
+                  const role = ticket.role || (ticket.customer ? 'Customer' : ticket.chef ? 'Chef' : '-');
+                  const summary = ticket.issueSummary || ticket.message || ticket.description || '-';
+                  const supportNum = ticket.supportNumber || ticket.refundId || '-';
+                  
+                  return (
+                  <div key={ticketId} className="px-2 sm:px-6 py-4 hover:bg-gray-50">
                     {/* Responsive: grid for md+, stacked for mobile */}
                     <div className="grid grid-cols-1 md:grid-cols-7 gap-2 md:gap-4 items-center">
                       {/* Date Issued */}
                       <div className="text-sm">
-                        <div className="font-medium text-gray-900">{ticket.dateIssued || "-"}</div>
-                        <div className="text-gray-500">{ticket.time || ""}</div>
+                        <div className="font-medium text-gray-900">{formattedDate}</div>
+                        <div className="text-gray-500">{formattedTime}</div>
                       </div>
 
                       {/* Status */}
                       <div>
-                        <Badge className={getStatusBadgeColor(ticket.status)}>
-                          {ticket.status || "-"}
+                        <Badge className={getStatusBadgeColor(ticket.status || 'Pending')}>
+                          {ticket.status || "Pending"}
                         </Badge>
                       </div>
 
-                      {/* Refund ID */}
+                      {/* Support Number */}
                       <div className="text-sm font-medium text-gray-900">
-                        {ticket.refundId}
+                        {supportNum}
                       </div>
 
                       {/* Issuer Name */}
                       <div className="text-sm text-gray-500">
-                        {ticket.issuerName}
+                        {issuerName}
                       </div>
 
                       {/* Role */}
                       <div className="text-sm text-gray-500">
-                        {ticket.role}
+                        {role}
                       </div>
 
                       {/* Issue Summary */}
-                      <div className="text-sm text-gray-500">
-                        {ticket.issueSummary}
+                      <div className="text-sm text-gray-500 truncate">
+                        {summary}
                       </div>
 
                       {/* Action */}
                       <div className="text-right">
-                        <Link href={`/support/${ticket.id}`}>
+                        <Link href={`/support/${ticketId}`}>
                           <Button 
                             size="sm" 
                             className="bg-[#C72600] hover:bg-red-700 text-white"
@@ -172,7 +205,7 @@ export default function SupportPage() {
                       </div>
                     </div>
                   </div>
-                ))}
+                )})}
               </div>
             </CardContent>
           </Card>
