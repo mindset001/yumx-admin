@@ -53,7 +53,7 @@ function useMeals(page: number = 1, limit: number = 10) {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `/api/meal?page=${page}&limit=${limit}`;
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/meal?page=${page}&limit=${limit}`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');
@@ -110,17 +110,17 @@ export default function MealsPage() {
     },
     {
       title: "Active meals",
-      value: "25",
+      value: total.toString(),
       variant: 'secondary' as const
     },
     {
       title: "Not active meals",
-      value: "25",
+      value: "0",
       variant: 'secondary' as const
     },
     {
       title: "Total ordered meals",
-      value: "25",
+      value: "0",
       variant: 'primary' as const
     }
   ];

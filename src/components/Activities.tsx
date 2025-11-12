@@ -78,7 +78,7 @@ export function Activities() {
         }
 
         const response = await fetch(
-          '/api/meal?page=1&limit=5',
+          `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/meal?page=1&limit=5`,
           {
             headers,
             credentials: "include",

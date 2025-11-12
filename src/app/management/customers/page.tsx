@@ -48,7 +48,7 @@ function useCustomers(page: number = 1, limit: number = 10) {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `/api/customer?page=${page}&limit=${limit}`;
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/customer?page=${page}&limit=${limit}`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');
@@ -105,17 +105,17 @@ export default function CustomersPage() {
     },
     {
       title: "Active customers",
-      value: "25",
+      value: total.toString(),
       variant: 'secondary' as const
     },
     {
       title: "Not active customers",
-      value: "25",
+      value: "0",
       variant: 'secondary' as const
     },
     {
       title: "Total customers order",
-      value: "25",
+      value: "0",
       variant: 'primary' as const
     }
   ];

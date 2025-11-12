@@ -31,7 +31,7 @@ function useOrders() {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `/api/order`;
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/order`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');
@@ -64,22 +64,22 @@ function useOrders() {
 const statsCards = [
   {
     title: "Total orders",
-    value: "25",
+    value: "0",
     variant: 'primary' as const
   },
   {
     title: "Completed orders",
-    value: "25",
+    value: "0",
     variant: 'secondary' as const
   },
   {
     title: "Failed orders",
-    value: "25",
+    value: "0",
     variant: 'secondary' as const
   },
   {
     title: "Uncompleted orders",
-    value: "25",
+    value: "0",
     variant: 'primary' as const
   }
 ];

@@ -31,7 +31,7 @@ function useTransactions() {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || ""}/transaction`;
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/transaction`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');
@@ -44,7 +44,8 @@ function useTransactions() {
         });
         if (!res.ok) throw new Error("Failed to fetch transactions");
         const data = await res.json();
-        setTransactions(Array.isArray(data) ? data : (data.transactions || []));
+        console.log('Transactions data:', data);
+        setTransactions(Array.isArray(data) ? data : (data?.data?.data || data.transactions || []));
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);

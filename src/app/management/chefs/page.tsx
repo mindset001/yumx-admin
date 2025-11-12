@@ -47,7 +47,7 @@ function useChefs(page: number = 1, limit: number = 10) {
       setLoading(true);
       setError(null);
       try {
-        const endpoint = `/api/chef?page=${page}&limit=${limit}`;
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/chef?page=${page}&limit=${limit}`;
         const headers: Record<string, string> = {};
         if (typeof window !== 'undefined') {
           const accessToken = localStorage.getItem('accessToken');
@@ -104,17 +104,17 @@ export default function ChefsPage() {
     },
     {
       title: "Active chefs",
-      value: "25",
+      value: total.toString(),
       variant: 'secondary' as const
     },
     {
       title: "Not active chefs",
-      value: "25",
+      value: "0",
       variant: 'secondary' as const
     },
     {
       title: "Most selling chefs",
-      value: "25",
+      value: "0",
       variant: 'primary' as const
     }
   ];
