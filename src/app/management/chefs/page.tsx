@@ -19,7 +19,6 @@ interface Chef {
   location: string;
 }
 
-
 function useChefs() {
   const [chefs, setChefs] = useState<Chef[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,8 +44,8 @@ function useChefs() {
         const data = await res.json();
         setChefs(Array.isArray(data) ? data : (data.chefs || []));
       } catch (err: unknown) {
-        if (typeof err === 'object' && err !== null && 'message' in err && typeof (err as any).message === 'string') {
-          setError((err as { message: string }).message);
+        if (err instanceof Error) {
+          setError(err.message);
         } else {
           setError("Unknown error");
         }
@@ -111,7 +110,7 @@ export default function ChefsPage() {
             {statsCards.map((stat, index) => (
               <Card
                 key={index}
-                className={`$${
+                className={`${
                   stat.variant === 'primary'
                     ? 'bg-[#C72600] text-white border-0'
                     : 'bg-[#FFF2F2] border border-gray-200'
@@ -174,7 +173,7 @@ export default function ChefsPage() {
                       {/* Status */}
                       <div>
                         <Badge
-                          className={`$${
+                          className={`${
                             chef.status === 'Approved'
                               ? 'bg-green-100 text-green-800 hover:bg-green-100'
                               : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100'
@@ -221,4 +220,3 @@ export default function ChefsPage() {
     </div>
   );
 }
-//

@@ -1,6 +1,5 @@
 'use client'
 
-
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,7 +18,6 @@ interface Customer {
   email: string;
   location: string;
 }
-
 
 function useCustomers() {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -46,8 +44,8 @@ function useCustomers() {
         const data = await res.json();
         setCustomers(Array.isArray(data) ? data : (data.customers || []));
       } catch (err: unknown) {
-        if (typeof err === 'object' && err !== null && 'message' in err && typeof (err as any).message === 'string') {
-          setError((err as { message: string }).message);
+        if (err instanceof Error) {
+          setError(err.message);
         } else {
           setError("Unknown error");
         }
