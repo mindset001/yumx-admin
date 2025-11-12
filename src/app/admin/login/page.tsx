@@ -11,7 +11,7 @@ import { setCredentials } from "@/lib/features/auth/authSlice";
 
 // API endpoints configuration
 const API_ENDPOINTS = {
-  login: process.env.NEXT_PUBLIC_API_URL + '/auth/login' || '/auth/login'
+  login: `${process.env.NEXT_PUBLIC_API_URL || 'https://yumx.metronio.com'}/auth/login`
 };
 
 function AdminLoginInner() {
