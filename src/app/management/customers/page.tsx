@@ -45,8 +45,12 @@ function useCustomers() {
         if (!res.ok) throw new Error("Failed to fetch customers");
         const data = await res.json();
         setCustomers(Array.isArray(data) ? data : (data.customers || []));
-      } catch (err: any) {
-        setError(err.message || "Unknown error");
+      } catch (err: unknown) {
+        if (typeof err === 'object' && err !== null && 'message' in err && typeof (err as any).message === 'string') {
+          setError((err as { message: string }).message);
+        } else {
+          setError("Unknown error");
+        }
       } finally {
         setLoading(false);
       }

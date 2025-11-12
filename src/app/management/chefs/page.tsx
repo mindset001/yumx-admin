@@ -44,8 +44,12 @@ function useChefs() {
         if (!res.ok) throw new Error("Failed to fetch chefs");
         const data = await res.json();
         setChefs(Array.isArray(data) ? data : (data.chefs || []));
-      } catch (err: any) {
-        setError(err.message || "Unknown error");
+      } catch (err: unknown) {
+        if (typeof err === 'object' && err !== null && 'message' in err && typeof (err as any).message === 'string') {
+          setError((err as { message: string }).message);
+        } else {
+          setError("Unknown error");
+        }
       } finally {
         setLoading(false);
       }
